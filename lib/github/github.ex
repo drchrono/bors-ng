@@ -192,13 +192,17 @@ defmodule BorsNG.GitHub do
     commit
   end
 
-  @spec synthesize_commit!(tconn, %{
-          branch: bitstring,
-          tree: bitstring,
-          parents: [bitstring],
-          commit_message: bitstring,
-          committer: tcommitter | nil
-        }, bitstring | nil) :: binary
+  @spec synthesize_commit!(
+          tconn,
+          %{
+            branch: bitstring,
+            tree: bitstring,
+            parents: [bitstring],
+            commit_message: bitstring,
+            committer: tcommitter | nil
+          },
+          bitstring | nil
+        ) :: binary
   def synthesize_commit!(repo_conn, info, signing_key \\ nil) do
     {:ok, sha} =
       GenServer.call(
@@ -210,13 +214,17 @@ defmodule BorsNG.GitHub do
     sha
   end
 
-  @spec create_commit!(tconn, %{
-          tree: bitstring,
-          parents: [bitstring],
-          commit_message: bitstring,
-          author: tcommitter | nil,
-          committer: tcommitter | nil
-        }, bitstring | nil) :: binary
+  @spec create_commit!(
+          tconn,
+          %{
+            tree: bitstring,
+            parents: [bitstring],
+            commit_message: bitstring,
+            author: tcommitter | nil,
+            committer: tcommitter | nil
+          },
+          bitstring | nil
+        ) :: binary
   def create_commit!(repo_conn, info, signing_key \\ nil) do
     {:ok, sha} =
       GenServer.call(

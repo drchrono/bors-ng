@@ -310,16 +310,19 @@ defmodule BorsNG.GitHub.Server do
         is_nil(signing_key) ->
           Logger.debug("Not signing commit in create_commit because signing_key is nil")
           msg
+
         is_nil(author) ->
           Logger.debug("Not signing commit in create_commit because author is nil")
           msg
+
         is_nil(committer) ->
           Logger.debug("Not signing commit in create_commit because committer is nil")
           msg
+
         true ->
           msg
-            |> GitHub.Signature.add_timestamp(DateTime.utc_now())
-            |> GitHub.Signature.sign!(signing_key)
+          |> GitHub.Signature.add_timestamp(DateTime.utc_now())
+          |> GitHub.Signature.sign!(signing_key)
       end
 
     resp =
@@ -379,13 +382,15 @@ defmodule BorsNG.GitHub.Server do
         is_nil(signing_key) ->
           Logger.debug("Not signing commit in synthesize_commit because signing_key is nil")
           msg
+
         is_nil(committer) ->
           Logger.debug("Not signing commit in synthesize_commit because committer is nil")
           msg
+
         true ->
           msg
-            |> GitHub.Signature.add_timestamp(DateTime.utc_now())
-            |> GitHub.Signature.sign!(signing_key)
+          |> GitHub.Signature.add_timestamp(DateTime.utc_now())
+          |> GitHub.Signature.sign!(signing_key)
       end
 
     repo_conn

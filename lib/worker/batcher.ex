@@ -395,16 +395,19 @@ defmodule BorsNG.Worker.Batcher do
         batch.into_branch
       )
 
-    toml = repo_conn
+    toml =
+      repo_conn
       |> Batcher.GetBorsToml.get(base.commit)
       |> case do
-           {:ok, toml} -> toml
-           {:error, message} ->
-             message = Batcher.Message.generate_bors_toml_error(message)
-             patches = Enum.map(patch_links, & &1.patch)
-             send_message(repo_conn, patches, {:config, message})
-             nil
-         end
+        {:ok, toml} ->
+          toml
+
+        {:error, message} ->
+          message = Batcher.Message.generate_bors_toml_error(message)
+          patches = Enum.map(patch_links, & &1.patch)
+          send_message(repo_conn, patches, {:config, message})
+          nil
+      end
 
     tbase = %{
       tree: base.tree,
@@ -996,7 +999,11 @@ defmodule BorsNG.Worker.Batcher do
       end
 
     Logger.info(
-      "Code review status: Label Check #{passed_label} Passed Status: #{no_error_status and no_waiting_status and no_unset_status} Passed Review: #{passed_review} CODEOWNERS: #{code_owners_approved} Passed Up-To-Date Review: #{passed_up_to_date_review}"
+      "Code review status: Label Check #{passed_label} Passed Status: #{
+        no_error_status and no_waiting_status and no_unset_status
+      } Passed Review: #{passed_review} CODEOWNERS: #{code_owners_approved} Passed Up-To-Date Review: #{
+        passed_up_to_date_review
+      }"
     )
 
     case {passed_label, no_error_status, no_waiting_status, no_unset_status, passed_review,

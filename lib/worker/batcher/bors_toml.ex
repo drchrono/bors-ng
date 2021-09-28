@@ -92,9 +92,9 @@ defmodule BorsNG.Worker.Batcher.BorsToml do
               c = to_map(committer)
 
               {%{
-                name: Map.get(c, "name", nil),
-                email: Map.get(c, "email", nil)
-              }, Map.get(c, "signing_key", nil)}
+                 name: Map.get(c, "name", nil),
+                 email: Map.get(c, "email", nil)
+               }, Map.get(c, "signing_key", nil)}
           end
 
         toml = %BorsNG.Worker.Batcher.BorsToml{
@@ -127,7 +127,7 @@ defmodule BorsNG.Worker.Batcher.BorsToml do
           committer: committer,
           commit_title: Map.get(toml, "commit_title", "Merge ${PR_REFS}"),
           update_base_for_deletes: Map.get(toml, "update_base_for_deletes", false),
-          signing_key: signing_key,
+          signing_key: signing_key
         }
 
         case toml do
