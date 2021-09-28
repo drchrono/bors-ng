@@ -403,9 +403,6 @@ defmodule BorsNG.Worker.Batcher do
           toml
 
         {:error, message} ->
-          message = Batcher.Message.generate_bors_toml_error(message)
-          patches = Enum.map(patch_links, & &1.patch)
-          send_message(repo_conn, patches, {:config, message})
           nil
       end
 
@@ -421,11 +418,7 @@ defmodule BorsNG.Worker.Batcher do
             commit_message: "[ci skip][skip ci][skip netlify]",
             committer: nil
           },
-          if is_nil(toml) do
-            nil
-          else
-            toml.signing_key
-          end
+          toml && toml.signing_key
         )
     }
 
