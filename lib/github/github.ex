@@ -192,35 +192,44 @@ defmodule BorsNG.GitHub do
     commit
   end
 
-  @spec synthesize_commit!(tconn, %{
-          branch: bitstring,
-          tree: bitstring,
-          parents: [bitstring],
-          commit_message: bitstring,
-          committer: tcommitter | nil
-        }) :: binary
-  def synthesize_commit!(repo_conn, info) do
+  @spec synthesize_commit!(
+          tconn,
+          %{
+            branch: bitstring,
+            tree: bitstring,
+            parents: [bitstring],
+            commit_message: bitstring,
+            committer: tcommitter | nil
+          },
+          bitstring | nil
+        ) :: binary
+  def synthesize_commit!(repo_conn, info, signing_key \\ nil) do
     {:ok, sha} =
       GenServer.call(
         BorsNG.GitHub,
-        {:synthesize_commit, repo_conn, {info}},
+        {:synthesize_commit, repo_conn, {info, signing_key}},
         Confex.fetch_env!(:bors, :api_github_timeout)
       )
 
     sha
   end
 
-  @spec create_commit!(tconn, %{
-          tree: bitstring,
-          parents: [bitstring],
-          commit_message: bitstring,
-          committer: tcommitter | nil
-        }) :: binary
-  def create_commit!(repo_conn, info) do
+  @spec create_commit!(
+          tconn,
+          %{
+            tree: bitstring,
+            parents: [bitstring],
+            commit_message: bitstring,
+            author: tcommitter | nil,
+            committer: tcommitter | nil
+          },
+          bitstring | nil
+        ) :: binary
+  def create_commit!(repo_conn, info, signing_key \\ nil) do
     {:ok, sha} =
       GenServer.call(
         BorsNG.GitHub,
-        {:create_commit, repo_conn, {info}},
+        {:create_commit, repo_conn, {info, signing_key}},
         Confex.fetch_env!(:bors, :api_github_timeout)
       )
 

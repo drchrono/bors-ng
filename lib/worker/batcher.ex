@@ -395,6 +395,17 @@ defmodule BorsNG.Worker.Batcher do
         batch.into_branch
       )
 
+    toml =
+      repo_conn
+      |> Batcher.GetBorsToml.get(base.commit)
+      |> case do
+        {:ok, toml} ->
+          toml
+
+        {:error, message} ->
+          nil
+      end
+
     tbase = %{
       tree: base.tree,
       commit:
@@ -406,7 +417,8 @@ defmodule BorsNG.Worker.Batcher do
             parents: [base.commit],
             commit_message: "[ci skip][skip ci][skip netlify]",
             committer: nil
-          }
+          },
+          toml && toml.signing_key
         )
     }
 
@@ -535,8 +547,10 @@ defmodule BorsNG.Worker.Batcher do
                       tree: merge_commit.tree,
                       parents: [prev_head],
                       commit_message: commit_message,
-                      committer: %{name: user.name || user.login, email: user_email}
-                    }
+                      author: %{name: user.name || user.login, email: user_email},
+                      committer: toml.committer
+                    },
+                    toml.signing_key
                   )
 
                 Logger.info("Commit Sha #{inspect(cpt)}")
@@ -574,7 +588,8 @@ defmodule BorsNG.Worker.Batcher do
                 parents: parents,
                 commit_message: commit_message,
                 committer: toml.committer
-              }
+              },
+              toml.signing_key
             )
           end
 

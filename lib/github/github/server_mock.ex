@@ -366,7 +366,7 @@ defmodule BorsNG.GitHub.ServerMock do
            parents: parents,
            commit_message: commit_message,
            committer: _committer
-         }},
+         }, _signing_key},
         state
       ) do
     with {:ok, repo} <- Map.fetch(state, repo_conn),
