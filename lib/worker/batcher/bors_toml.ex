@@ -30,7 +30,8 @@ defmodule BorsNG.Worker.Batcher.BorsToml do
             use_codeowners: false,
             committer: nil,
             commit_title: "Merge ${PR_REFS}",
-            update_base_for_deletes: false
+            update_base_for_deletes: false,
+            signing_key: nil
 
   @type tcommitter :: %{
           name: binary,
@@ -51,7 +52,8 @@ defmodule BorsNG.Worker.Batcher.BorsToml do
           use_codeowners: boolean,
           committer: tcommitter,
           commit_title: binary,
-          update_base_for_deletes: boolean
+          update_base_for_deletes: boolean,
+          signing_key: binary | nil
         }
 
   @type err ::
@@ -81,18 +83,18 @@ defmodule BorsNG.Worker.Batcher.BorsToml do
 
         committer = Map.get(toml, "committer", nil)
 
-        committer =
+        {committer, signing_key} =
           case committer do
             nil ->
-              nil
+              {nil, nil}
 
             _ ->
               c = to_map(committer)
 
-              %{
+              {%{
                 name: Map.get(c, "name", nil),
                 email: Map.get(c, "email", nil)
-              }
+              }, Map.get(c, "signing_key", nil)}
           end
 
         toml = %BorsNG.Worker.Batcher.BorsToml{
@@ -124,7 +126,8 @@ defmodule BorsNG.Worker.Batcher.BorsToml do
             ),
           committer: committer,
           commit_title: Map.get(toml, "commit_title", "Merge ${PR_REFS}"),
-          update_base_for_deletes: Map.get(toml, "update_base_for_deletes", false)
+          update_base_for_deletes: Map.get(toml, "update_base_for_deletes", false),
+          signing_key: signing_key,
         }
 
         case toml do
@@ -158,6 +161,9 @@ defmodule BorsNG.Worker.Batcher.BorsToml do
 
           %{commit_title: msg} when not is_binary(msg) and not is_nil(msg) ->
             {:error, :commit_title}
+
+          %{signing_key: k} when not is_binary(k) and not is_nil(k) ->
+            {:error, :signing_key}
 
           toml ->
             status =
