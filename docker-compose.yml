@@ -1,0 +1,31 @@
+version: "2"
+services:
+  bors:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        - DOCKERIZE_ARCH=$DOCKERIZE_ARCH
+    image: bors-ng:local
+    ports:
+      - "4000:4000"
+    tty: true
+    env_file:
+      - .env_docker
+    restart: always
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:10.5
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      # Make sure the [censored] password here matches the one in the DATABASE_URL
+      POSTGRES_PASSWORD: "7vMibEOXo1kp3bQImeTmwA"
+      POSTGRES_DB: "bors"
+volumes:
+  db_data:
+networks:
+  default:
+    driver: bridge
