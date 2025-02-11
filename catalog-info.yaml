@@ -1,0 +1,24 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: bors-ng
+  description: "\U0001F441 A merge bot for GitHub Pull Requests"
+  annotations:
+    business-unit: EverHealth
+    github.com/project-slug: drchrono/bors-ng
+    product: DRC
+spec:
+  type: service
+  lifecycle: production
+  owner: EverHealth
+  implementation:
+    languages:
+    - Elixir
+    - HTML
+    - JavaScript
+    - CSS
+    - HCL
+    - Dockerfile
+    - Shell
+    - Smarty
+    - Procfile
